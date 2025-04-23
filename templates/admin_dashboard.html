@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e3ebef;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #008080;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+        }
+        .logout {
+            text-decoration: none;
+            color: white;
+            padding: 10px;
+            background-color: red;
+            border-radius: 5px;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #008080;
+            color: white;
+        }
+        .btn {
+            display: block;
+            text-decoration: none;
+            padding: 8px 12px;
+            color: white;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .aptitude-btn {
+            background-color: blue;
+        }
+        .career-btn {
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <h2>Admin Dashboard</h2>
+    <a href="/admin_logout" class="logout">Logout</a>
+</div>
+
+<div class="container">
+    <h2>Registered Students</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Mobile Number</th>
+            <th>Country</th>
+            <th>Curriculum</th>
+            <th>School Name</th>
+            <th>Grade</th>
+            <th>Referral Source</th>
+            <th>Registration Date</th>
+            <th>Actions</th>
+        </tr>
+        {% for student in students %}
+        <tr>
+            <td>{{ student.id }}</td>
+            <td>{{ student.first_name }}</td>
+            <td>{{ student.last_name }}</td>
+            <td>{{ student.email }}</td>
+            <td>{{ student.mobile_number }}</td>
+            <td>{{ student.country }}</td>
+            <td>{{ student.curriculum }}</td>
+            <td>{{ student.school_name }}</td>
+            <td>{{ student.grade }}</td>
+            <td>{{ student.referral_source }}</td>
+            <td>{{ student.created_at }}</td>
+            <td>
+                <a href="{{ url_for('download_aptitude', student_id=student.id) }}" class="btn aptitude-btn">Download Aptitude</a>
+               
+                <a href="{{ url_for('download_career', student_id=student.id) }}" class="btn career-btn">Download Career</a>
+
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+</body>
+</html>

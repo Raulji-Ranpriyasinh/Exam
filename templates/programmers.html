@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programmes - Edmission</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e3ebef;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #008080;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .logout {
+            text-decoration: none;
+            color: white;
+            padding: 10px;
+            background-color: red;
+            border-radius: 5px;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .status {
+            background-color: #d4edda;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .start-btn {
+            background-color: #008080;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .start-btn:hover {
+            background-color: #005f5f;
+        }
+        .dropdown {
+            position: relative;
+        
+            float: right;
+            padding-right: 20px;
+        }
+        
+        .dropdown-btn {
+            cursor: pointer;
+            font-weight: bold;
+        }
+    
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 180px;
+            z-index: 1;
+            padding: 10px;
+            text-align: left;
+        }
+    
+        .dropdown-content p {
+            margin: 10px;
+            font-weight: bold;
+            color: black;
+        }
+    
+        .dropdown-content a {
+            display: block;
+            padding: 10px;
+            color: black;
+            text-decoration: none;
+        }
+    
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        Welcome to Edgepsyoh
+
+
+
+
+        
+        <div class="dropdown">
+            <span onclick="toggleDropdown()" class="dropdown-btn">
+                {{ first_name }} ▼
+            </span>
+            <div class="dropdown-content" id="dropdownMenu">
+                <p>ID: {{ user_id }}</p>
+                <p> {{ email }}</p>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #008080;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 160px;
+            z-index: 1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 10px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .disabled {
+            pointer-events: none;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+
+<div class="container">
+    <h2>Programmes</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>MyAptitude</h3>
+            <p>A psychometrically based aptitude assessment developed by experts.</p>
+            <div class="status">You can start the questionnaire</div>
+
+            {% if not aptitude_completed %}
+    <a href="{{ url_for('aptitude_questionnaire') }}" class="start-btn">Start ▶</a>
+{% else %}
+    <a class="start-btn disabled">✅ Test Completed</a>
+{% endif %}
+            <!-- <a href="{{ url_for('aptitude_questionnaire') }}" class="start-btn">Start ▶</a> -->
+        </div>
+
+        <div class="card">
+            <h3>MyCareerChoices</h3>
+            <p>Analyses your responses to questions and creates a career profile.</p>
+            <div class="status">You can start the questionnaire</div>
+            {% if not career_completed %}
+            <a href="{{ url_for('career_assessment') }}" class="start-btn">Start ▶</a>
+        {% else %}
+            <a class="start-btn disabled">✅ Test Completed</a>
+        {% endif %}
+
+            <span id="submitted-text" style="display: none; color: green; font-size: 18px; font-weight: bold;">✔ Submitted</span>
+        </div>
+        
+    </div>
+</div>
+
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let completed = localStorage.getItem("quizCompleted");
+        let startBtn = document.getElementById("start-btn");
+        let btnText = document.getElementById("btn-text");
+        let lockIcon = document.getElementById("lock-icon");
+
+        if (completed === "true") {
+            startBtn.disabled = true;
+            btnText.innerText = "Already Completed";
+            lockIcon.style.display = "inline"; // Show lock icon
+        }
+    });
+</script>
+<script>
+    function toggleDropdown() {
+        var dropdown = document.getElementById("dropdownMenu");
+        dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function(event) {
+        var dropdown = document.getElementById("dropdownMenu");
+        var button = document.querySelector(".dropdown-btn");
+        if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.style.display = "none";
+        }
+    });
+
+
+    
+</script>
+</html>

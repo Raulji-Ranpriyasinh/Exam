@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e3ebef;
+        }
+
+        /* Soft Navbar UI */
+        /*.navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #008080, #00a6a6);
+            color: white;
+            padding: 15px;
+            font-size: 20px;
+         
+        }*/
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #008080;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 160px;
+            z-index: 1;
+            border-radius: 5px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 10px;
+            text-decoration: none;
+            display: block;
+            border-radius: 5px;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Main Container */
+        .container {
+            background: white;
+            width: 60%;
+            margin: 40px auto;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            /* Center align the text */
+            position: relative;
+            padding-bottom: 80px;
+            /* Space for buttons */
+        }
+
+        .question {
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            justify-content: center;
+        }
+
+        .button-wrapper {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Buttons with Soft UI */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .yes {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .maybe {
+            background-color: #f1c40f;
+            color: white;
+        }
+
+        .no {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        .dropdown {
+            position: relative;
+
+            float: right;
+            padding-right: 20px;
+        }
+
+        .dropdown-btn {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 180px;
+            z-index: 1;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .dropdown-content p {
+            margin: 10px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 10px;
+            color: black;
+            text-decoration: none;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <span>Welcome to Edgepsyoh</span>
+        <div class="dropdown">
+            <span onclick="toggleDropdown()" class="dropdown-btn">
+                {{ first_name }} ▼
+            </span>
+            <div class="dropdown-content" id="dropdownMenu">
+                <p>ID: {{ user_id }}</p>
+                <p>{{ email }}</p>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Career Question Container -->
+    <div class="container">
+        <h2>Career Questions</h2>
+        <p class="question" id="question">Loading...</p>
+
+        <div class="button-wrapper">
+            <button class="btn yes" onclick="nextQuestion(2)">YES</button>
+            <button class="btn maybe" onclick="nextQuestion(1)">MAYBE</button>
+            <button class="btn no" onclick="nextQuestion(0)">NO</button>
+        </div>
+    </div>
+
+
+    <script>
+
+        function toggleDropdown() {
+            var dropdown = document.getElementById("dropdownMenu");
+            dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function (event) {
+            var dropdown = document.getElementById("dropdownMenu");
+            var button = document.querySelector(".dropdown-btn");
+            if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.style.display = "none";
+            }
+        });
+
+        let currentQuestion = null;  // Stores the current question
+
+        function loadQuestion() {
+            fetch('/career_questions')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        currentQuestion = data;  // Store the question
+                        updateQuestion();
+                    } else {
+                        document.getElementById("question").innerText = "No questions available.";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById("question").innerText = "Error fetching questions.";
+                });
+        }
+
+        function updateQuestion() {
+            if (currentQuestion) {
+                let questionElement = document.getElementById("question");
+                questionElement.innerText = `Q${currentQuestion.question_number}: ${currentQuestion.question_text}`;
+            } else {
+                document.getElementById("question").innerText = "No questions available.";
+            }
+        }
+
+        function nextQuestion(weight) {
+            if (!currentQuestion) return;
+
+            let questionId = currentQuestion.question_number;  // Use question_number instead of id
+
+            fetch('/submit_response', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    question_id: questionId,
+                    response_weight: weight
+                })
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadQuestion();  // Load the next question from the API
+                    } else {
+                        document.getElementById("question").innerText = "Error submitting response.";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById("question").innerText = "Error submitting response.";
+                });
+        }
+
+        window.onload = loadQuestion;
+
+    </script>
+
+</body>
+
+</html>
