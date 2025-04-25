@@ -8,18 +8,21 @@ app = Flask(__name__)
 import json
 
 # Secret key for session management
-#app.secret_key = 'your_secret_key'
+app.secret_key = 'your_secret_key'
 
-import os
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "fallback_secret_key")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    "DATABASE_URL", "mysql+pymysql://root:5525@localhost/EXAM"
-)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 #------------------------------------------
 # Database Configuration
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:5525@localhost/EXAM'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+
+
+app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://RRanu:R@nu57895789@RRanu.mysql.pythonanywhere-services.com/RRanu$exam'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+
+
 
 db = SQLAlchemy(app)
 
